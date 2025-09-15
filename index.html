@@ -167,8 +167,8 @@
         <main id="home-page" class="container mx-auto p-4 md:p-8">
             <!-- Hero Section -->
             <section class="text-center py-16 md:py-10">
-                <h1 class="text-3xl md:text-5xl font-bold leading-tight mb-8">
-                    전자 화폐 <span class="text-yellow-400">코인 채굴대행 사업</span>
+                <h1 class="text-3xl md:text-5xl font-bold leading-tight mb-12">
+                    암호화폐 채굴 <span class="text-yellow-400"> COIN Farm </span>에서 시작하세요!
                 </h1>
                 <p class="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto">
                     채굴테크 암호화폐 채굴대행 서비스를 통해 장비 관리부터 수익 정산까지
