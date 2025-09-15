@@ -195,65 +195,131 @@
 
             <!-- Crypto Prices Section -->
             <section id="crypto-prices" class="py-16">
-                <div class="flex justify-between items-center mb-8">
-                    <div class="flex items-center space-x-4">
-                        <h2 class="text-3xl font-bold">코인 시세</h2>
-                        <p id="last-updated-time" class="text-m text-gray-400"></p>
-                    </div>
-                    <button id="analyze-market-btn" class="bg-blue-600 text-white font-bold py-2 px-6 rounded-full btn">
+                <div class="relative flex justify-center items-center mb-8">
+                    <h2 class="text-3xl font-bold">☆ 실시간 시세 차트 ☆</h2>
+                    <button id="analyze-market-btn" class="absolute right-0 bg-blue-600 text-white font-bold py-2 px-6 rounded-full btn">
                         시장 분석
                     </button>
                 </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
-                    <!-- Bitcoin Card -->
-                    <div class="card p-6 rounded-xl flex items-center justify-between">
-                        <div>
-                            <div class="text-lg text-gray-400">Bitcoin</div>
-                            <div id="price-bitcoin" class="text-lg font-bold mt-1">₩0</div>
+
+                <!-- Real-time Charts Section -->
+                               <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Bitcoin Chart -->
+                    <div class="h-[280px]">
+                        <div class="tradingview-widget-container h-full">
+                            <div class="tradingview-widget-container__widget h-full"></div>
+                            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                            {
+                              "symbol": "BITHUMB:BTCKRW",
+                              "width": "100%",
+                              "height": "100%",
+                              "locale": "ko",
+                              "dateRange": "1D",
+                              "colorTheme": "dark",
+                              "isTransparent": true,
+                              "autosize": false,
+                              "largeChartUrl": ""
+                            }
+                            </script>
                         </div>
-                        <div class=></div>
                     </div>
-                    <!-- USDT Tether Card -->
-                    <div class="card p-6 rounded-xl flex items-center justify-between">
-                        <div>
-                            <div class="text-lg text-gray-400">USDT Tether</div>
-                            <div id="price-tether" class="text-lg font-bold mt-1">₩0</div>
+                    <!-- Ethereum Chart -->
+                    <div class="h-[280px]">
+                        <div class="tradingview-widget-container h-full">
+                            <div class="tradingview-widget-container__widget h-full"></div>
+                            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                            {
+                              "symbol": "BITHUMB:ETHKRW",
+                              "width": "100%",
+                              "height": "100%",
+                              "locale": "ko",
+                              "dateRange": "1D",
+                              "colorTheme": "dark",
+                              "isTransparent": true,
+                              "autosize": false,
+                              "largeChartUrl": ""
+                            }
+                            </script>
                         </div>
-                        <div class=></div>
                     </div>
-                    <!-- Ethereum Card -->
-                    <div class="card p-6 rounded-xl flex items-center justify-between">
-                        <div>
-                            <div class="text-lg text-gray-400">Ethereum</div>
-                            <div id="price-ethereum" class="text-lg font-bold mt-1">₩0</div>
+                    <!-- Ripple Chart -->
+                    <div class="h-[280px]">
+                        <div class="tradingview-widget-container h-full">
+                            <div class="tradingview-widget-container__widget h-full"></div>
+                            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                            {
+                              "symbol": "BITHUMB:XRPKRW",
+                              "width": "100%",
+                              "height": "100%",
+                              "locale": "ko",
+                              "dateRange": "1D",
+                              "colorTheme": "dark",
+                              "isTransparent": true,
+                              "autosize": false,
+                              "largeChartUrl": ""
+                            }
+                            </script>
                         </div>
-                        <div class=></div>
                     </div>
-                    <!-- Dollars Card -->
-                    <div class="card p-6 rounded-xl flex items-center justify-between">
-                        <div>
-                            <div class="text-lg text-gray-400">Dollars</div>
-                            <div id="price-dollars" class="text-lg font-bold mt-1">₩0</div>
+                    <!-- Solana Chart -->
+                    <div class="h-[280px]">
+                        <div class="tradingview-widget-container h-full">
+                            <div class="tradingview-widget-container__widget h-full"></div>
+                            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                            {
+                              "symbol": "BITHUMB:SOLKRW",
+                              "width": "100%",
+                              "height": "100%",
+                              "locale": "ko",
+                              "dateRange": "1D",
+                              "colorTheme": "dark",
+                              "isTransparent": true,
+                              "autosize": false,
+                              "largeChartUrl": ""
+                            }
+                            </script>
                         </div>
-                        <div class=></div>
                     </div>
-                    <!-- Solana Card -->
-                    <div class="card p-6 rounded-xl flex items-center justify-between">
-                        <div>
-                            <div class="text-lg text-gray-400">Solana</div>
-                            <div id="price-solana" class="text-lg font-bold mt-1">₩0</div>
+                    <!-- Tether Chart -->
+                    <div class="h-[280px]">
+                        <div class="tradingview-widget-container h-full">
+                            <div class="tradingview-widget-container__widget h-full"></div>
+                            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                            {
+                              "symbol": "BITHUMB:USDTKRW",
+                              "width": "100%",
+                              "height": "100%",
+                              "locale": "ko",
+                              "dateRange": "1D",
+                              "colorTheme": "dark",
+                              "isTransparent": true,
+                              "autosize": false,
+                              "largeChartUrl": ""
+                            }
+                            </script>
                         </div>
-                        <div class=></div>
                     </div>
-                    <!-- Dogecoin Card -->
-                    <div class="card p-6 rounded-xl flex items-center justify-between">
-                        <div>
-                            <div class="text-lg text-gray-400">Dogecoin</div>
-                            <div id="price-dogecoin" class="text-lg font-bold mt-1">₩0</div>
+                    <!-- Dogecoin Chart -->
+                    <div class="h-[280px]">
+                        <div class="tradingview-widget-container h-full">
+                            <div class="tradingview-widget-container__widget h-full"></div>
+                            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+                            {
+                              "symbol": "BITHUMB:DOGEKRW",
+                              "width": "100%",
+                              "height": "100%",
+                              "locale": "ko",
+                              "dateRange": "1D",
+                              "colorTheme": "dark",
+                              "isTransparent": true,
+                              "autosize": false,
+                              "largeChartUrl": ""
+                            }
+                            </script>
                         </div>
-                        <div class=></div>
                     </div>
                 </div>
+
                 <!-- Crypto analysis result section -->
                 <div id="crypto-analysis-result" class="card p-6 mt-8 rounded-xl hidden">
                     <h3 class="text-xl font-bold text-yellow-400 mb-2">시장 분석 결과</h3>
@@ -838,9 +904,7 @@
         const saveMiningRates = (rates) => localStorage.setItem('miningRates', JSON.stringify(rates));
         const getInquiries = () => JSON.parse(localStorage.getItem('inquiries')) || [];
         const saveInquiries = (inquiries) => localStorage.setItem('inquiries', JSON.stringify(inquiries));
-        const getCryptoPrices = () => JSON.parse(localStorage.getItem('cryptoPrices'));
-        const saveCryptoPrices = (data) => localStorage.setItem('cryptoPrices', JSON.stringify(data));
-
+        
         // Helper to format currency
         const formatCurrency = (amount) => {
             return `₩${Math.round(amount).toLocaleString('ko-KR')}`;
@@ -892,67 +956,8 @@
         };
         
         // ---- Crypto Price Update Logic ----
-        const renderCryptoPrices = () => {
-            const cryptoData = getCryptoPrices();
-            if (!cryptoData) return;
-
-            document.getElementById('price-bitcoin').textContent = formatCurrency(cryptoData.prices.bitcoin);
-            document.getElementById('price-tether').textContent = formatCurrency(cryptoData.prices.tether);
-            document.getElementById('price-ethereum').textContent = formatCurrency(cryptoData.prices.ethereum);
-            document.getElementById('price-dollars').textContent = formatCurrency(cryptoData.prices.dollars);
-            document.getElementById('price-solana').textContent = formatCurrency(cryptoData.prices.solana);
-            document.getElementById('price-dogecoin').textContent = formatCurrency(cryptoData.prices.dogecoin);
-            
-            const lastUpdatedElement = document.getElementById('last-updated-time');
-            lastUpdatedElement.textContent = `(마지막 업데이트: ${formatDateTime(cryptoData.lastUpdated)})`;
-        };
-
-        const updateCryptoPrices = () => {
-            // Base prices are updated to reflect current market rates from sources like Google Finance.
-            // Direct scraping from external sites is blocked by browser security (CORS), so we simulate real-time fluctuation.
-            const basePrices = {
-                bitcoin: 97092000,
-                tether: 1390,
-                ethereum: 4894000,
-                dollars: 1390, // Represents USD/KRW exchange rate
-                solana: 229600,
-                dogecoin: 209
-            };
-
-            // Simulate price fluctuation by +/- 5%
-            const fluctuate = (price) => {
-                const changePercent = (Math.random() - 0.5) * 0.10; 
-                return price * (1 + changePercent);
-            };
-
-            const newPrices = {
-                bitcoin: fluctuate(basePrices.bitcoin),
-                tether: fluctuate(basePrices.tether),
-                ethereum: fluctuate(basePrices.ethereum),
-                dollars: fluctuate(basePrices.dollars),
-                solana: fluctuate(basePrices.solana),
-                dogecoin: fluctuate(basePrices.dogecoin)
-            };
-
-            const cryptoData = {
-                lastUpdated: Date.now(),
-                prices: newPrices
-            };
-
-            saveCryptoPrices(cryptoData);
-            renderCryptoPrices();
-        };
-
-        const initCryptoPrices = () => {
-            // To meet the request of updating on every refresh, we call the update function directly.
-            // This simulates fetching new data each time the page loads.
-            updateCryptoPrices();
-
-            // Set an interval to also update prices periodically while the page is open.
-            const sixHours = 6 * 60 * 60 * 1000;
-            setInterval(updateCryptoPrices, sixHours);
-        };
-
+        // This section is now handled by the TradingView widget.
+        
         // Show a page and hide others
         const showPage = (pageId) => {
             if (pageId === 'admin' && (!isLoggedIn || !currentUser || !currentUser.isAdmin)) {
@@ -2232,8 +2237,7 @@
             initializeAdminAccount();
             showPage('home');
             updateAuthUI();
-            initCryptoPrices();
-
+            
             // Mobile Menu Logic
             mobileMenuButton.addEventListener('click', () => {
                 mobileMenu.classList.remove('hidden');
