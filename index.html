@@ -850,19 +850,20 @@
         let app = null;
         let db = null;
         let auth = null;
+
+        // Firebase Collection and Document References (defined after 'db' is assigned)
+        let USERS_COLLECTION_REF = null;
+        let CONFIG_DOC_REF = null;
         
-        // Initializing Firebase and assigning global constants/variables
+        // Initializing Firebase and assigning local variables
         if (Object.keys(firebaseConfig).length > 0) {
             app = fbInitializeApp(firebaseConfig);
             db = getFirestore(app);
             auth = getAuth(app);
-            // setLogLevel('Debug'); 
-
-            // Define global references using local instances
-            window.db = db;
-            window.auth = auth;
-            window.USERS_COLLECTION_REF = collection(db, `artifacts/${appId}/public/data/users`);
-            window.CONFIG_DOC_REF = doc(db, `artifacts/${appId}/public/data/config/mining_rates`);
+            
+            // Define local references after successful db initialization
+            USERS_COLLECTION_REF = collection(db, `artifacts/${appId}/public/data/users`);
+            CONFIG_DOC_REF = doc(db, `artifacts/${appId}/public/data/config/mining_rates`);
 
         } else {
             console.error("Firebase configuration is missing.");
@@ -1037,7 +1038,7 @@
         };
         
         const loginUser = async (username, password, isAdminLogin = false) => {
-            const usersRef = window.USERS_COLLECTION_REF;
+            const usersRef = USERS_COLLECTION_REF;
             const q = query(usersRef, where("username", "==", username), where("password", "==", password));
             
             try {
@@ -1096,8 +1097,8 @@
 
         const setupGlobalListeners = () => {
              // 1. Mining Rates Config Listener (Global)
-            if (!configListener && window.CONFIG_DOC_REF) {
-                configListener = onSnapshot(window.CONFIG_DOC_REF, (docSnapshot) => {
+            if (!configListener && CONFIG_DOC_REF) {
+                configListener = onSnapshot(CONFIG_DOC_REF, (docSnapshot) => {
                     const data = docSnapshot.data();
                     if (data) {
                         state.miningRates = {
@@ -1117,8 +1118,8 @@
             }
             
             // 2. Global Users Listener (for Admin table)
-            if (!globalUsersListener && window.USERS_COLLECTION_REF) {
-                globalUsersListener = onSnapshot(window.USERS_COLLECTION_REF, (snapshot) => {
+            if (!globalUsersListener && USERS_COLLECTION_REF) {
+                globalUsersListener = onSnapshot(USERS_COLLECTION_REF, (snapshot) => {
                     state.users = snapshot.docs.map(doc => ({ uid: doc.id, ...doc.data() }));
                     if (currentUser && currentUser.isAdmin && activePage === 'admin') renderAdminUsers();
                     console.log("Users Updated:", state.users.length);
@@ -1787,7 +1788,7 @@
             const password = document.getElementById('signup-password').value;
             const confirmPassword = document.getElementById('signup-password-confirm').value;
             const phone = document.getElementById('signup-phone').value;
-            const usersRef = window.USERS_COLLECTION_REF;
+            const usersRef = USERS_COLLECTION_REF;
             
             if (password !== confirmPassword) { modalMessage.textContent = '비밀번호가 일치하지 않습니다.'; modalMessage.classList.remove('hidden'); return; }
             if (username.toLowerCase() === 'admin') { modalMessage.textContent = '이 아이디는 사용할 수 없습니다.'; modalMessage.classList.remove('hidden'); return; }
@@ -1988,7 +1989,7 @@
             };
             
             try {
-                await setDoc(window.CONFIG_DOC_REF, rates, { merge: true });
+                await setDoc(CONFIG_DOC_REF, rates, { merge: true });
                 const message = document.getElementById('mining-rate-message');
                 message.textContent = '채굴량이 성공적으로 업데이트되었습니다.';
                 message.classList.remove('hidden', 'text-red-400');
@@ -2100,7 +2101,7 @@
             if (target.matches('.delete-user-btn')) {
                 const userUid = target.dataset.userUid;
                 try {
-                    const userDocRef = doc(window.USERS_COLLECTION_REF, userUid);
+                    const userDocRef = doc(USERS_COLLECTION_REF, userUid);
                     await deleteDoc(userDocRef);
                     showMessageModal('삭제', '회원 정보가 삭제되었습니다.');
                 } catch (error) {
@@ -2123,7 +2124,7 @@
             if (newPassword !== confirmPassword) { messageEl.textContent = '비밀번호가 일치하지 않습니다.'; messageEl.className = 'text-center text-sm mt-2 text-red-400'; return; }
             
             try {
-                const userDocRef = doc(window.USERS_COLLECTION_REF, userUid);
+                const userDocRef = doc(USERS_COLLECTION_REF, userUid);
                 await updateDoc(userDocRef, { password: newPassword });
                 
                 // Update the state locally for immediate display
@@ -2255,57 +2256,62 @@
 
         // --- Initialization and Auth State Change ---
 
-        const bootstrapApp = () => { // Renamed from initializeApp
+        const bootstrapApp = () => { 
+            // Ensure Firestore and Auth are ready before proceeding
+            if (!db || !auth) {
+                console.error("Firebase services not initialized. Retrying in 1 second.");
+                setTimeout(bootstrapApp, 1000);
+                return;
+            }
+
             setupGlobalListeners(); 
 
-            if (auth) {
-                onAuthStateChanged(auth, async (user) => {
-                    if (user) {
-                        currentFirebaseUser = user;
-                        // 1. Try to fetch user profile from Firestore
-                        const userDoc = await getDocs(query(window.USERS_COLLECTION_REF, where('uid', '==', user.uid)));
-                        
-                        if (!userDoc.empty) {
-                            currentUser = { ...userDoc.docs[0].data(), uid: user.uid };
-                            console.log("User profile loaded:", currentUser.username);
-                            setupUserListeners(user.uid);
-                            updateAuthUI();
-                            startGlobalMiningInterval();
-                            // If user is admin, force load admin data (which is handled by global listeners)
-                            if (currentUser.isAdmin) {
-                                renderAdminUsers(); // Rerender admin view with loaded data
-                            }
-                        } else {
-                            // User is signed in (anonymously or via token) but hasn't created a custom account (or it's the admin setup time)
-                            currentUser = null; 
-                            updateAuthUI();
-                            // If it's a new anonymous session, create a default admin user if one doesn't exist
-                            checkAndCreateAdminUser(user.uid);
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    currentFirebaseUser = user;
+                    // 1. Try to fetch user profile from Firestore
+                    const userDoc = await getDocs(query(USERS_COLLECTION_REF, where('uid', '==', user.uid)));
+                    
+                    if (!userDoc.empty) {
+                        currentUser = { ...userDoc.docs[0].data(), uid: user.uid };
+                        console.log("User profile loaded:", currentUser.username);
+                        setupUserListeners(user.uid);
+                        updateAuthUI();
+                        startGlobalMiningInterval();
+                        // If user is admin, force load admin data (which is handled by global listeners)
+                        if (currentUser.isAdmin) {
+                            renderAdminUsers(); // Rerender admin view with loaded data
                         }
                     } else {
-                         // Fallback to anonymous sign-in if no token provided or sign out
-                        try {
-                            if (initialAuthToken) {
-                                await signInWithCustomToken(auth, initialAuthToken);
-                            } else {
-                                await signInAnonymously(auth);
-                            }
-                        } catch (error) {
-                            console.error("Firebase Auth Error:", error);
-                        }
+                        // User is signed in (anonymously or via token) but hasn't created a custom account (or it's the admin setup time)
+                        currentUser = null; 
+                        updateAuthUI();
+                        // If it's a new anonymous session, create a default admin user if one doesn't exist
+                        checkAndCreateAdminUser(user.uid);
                     }
-                });
-            }
+                } else {
+                     // Fallback to anonymous sign-in if no token provided or sign out
+                    try {
+                        if (initialAuthToken) {
+                            await signInWithCustomToken(auth, initialAuthToken);
+                        } else {
+                            await signInAnonymously(auth);
+                        }
+                    } catch (error) {
+                        console.error("Firebase Auth Error:", error);
+                    }
+                }
+            });
         };
 
         const checkAndCreateAdminUser = async (uid) => {
              // Check if 'admin' user exists in Firestore
-             const adminQuery = query(window.USERS_COLLECTION_REF, where("username", "==", 'admin'));
+             const adminQuery = query(USERS_COLLECTION_REF, where("username", "==", 'admin'));
              const adminSnapshot = await getDocs(adminQuery);
 
              if (adminSnapshot.empty) {
                  // Create the default admin account only if it doesn't exist
-                 const adminUserDocRef = doc(window.USERS_COLLECTION_REF, uid);
+                 const adminUserDocRef = doc(USERS_COLLECTION_REF, uid);
                  await setDoc(adminUserDocRef, {
                     uid: uid,
                     id: generateDisplayUserId(uid),
