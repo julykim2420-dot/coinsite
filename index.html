@@ -97,6 +97,9 @@
             padding: 12px;
             border-bottom: 1px solid #30363d;
         }
+        .board-post {
+            border-bottom: 1px solid #30363d;
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -108,13 +111,15 @@
             </svg>
             <span class="text-xl md:text-2xl font-bold">Coin Farm</span>
         </div>
+        <!-- 메뉴 순서 수정: HOME - 이용방법 - 개설 - 내채굴장 - 내지갑 - 게시판 - 고객센터 -->
         <nav class="hidden md:flex space-x-10">
             <button class="hover:text-yellow-400" data-page="home">HOME</button>
             <button class="hover:text-yellow-400" data-page="howToMine">채굴장 이용방법</button>
             <button class="hover:text-yellow-400" data-page="openMiningFarm">채굴장 개설</button>
             <button class="hover:text-yellow-400" data-page="myMiningFarm">내채굴장</button>
             <button class="hover:text-yellow-400" data-page="coinWallet">내지갑</button>
-            <button class="hover:text-yellow-400" data-page="customerService">고객센터</button>
+            <button class="hover:text-yellow-400" data-page="board">게시판</button>
+            <button class="hover:text-yellow-400" data-page="customerService">고객센터</button> 
         </nav>
         <div class="flex items-center space-x-2">
             <div id="desktop-auth-buttons" class="hidden md:flex items-center space-x-4">
@@ -143,12 +148,14 @@
                 </svg>
             </button>
         </div>
+        <!-- 모바일 메뉴 순서 수정 -->
         <nav class="flex flex-col items-center space-y-6 mt-10 text-xl">
             <button class="hover:text-yellow-400" data-page="home">HOME</button>
             <button class="hover:text-yellow-400" data-page="howToMine">채굴장 이용방법</button>
             <button class="hover:text-yellow-400" data-page="openMiningFarm">채굴장 개설</button>
             <button class="hover:text-yellow-400" data-page="myMiningFarm">내채굴장</button>
             <button class="hover:text-yellow-400" data-page="coinWallet">내지갑</button>
+            <button class="hover:text-yellow-400" data-page="board">게시판</button>
             <button class="hover:text-yellow-400" data-page="customerService">고객센터</button>
             <div class="pt-6 border-t border-gray-700 w-3/4 text-center space-y-4">
                  <div id="mobile-auth-buttons">
@@ -447,7 +454,7 @@
                             <span class="text-gray-400">수량:</span>
                             <input type="number" value="1" min="1" class="w-16 form-input text-center" />
                         </div>
-                        <button class="w-full bg-yellow-500 text-gray-900 font-bold py-3 rounded-full btn" data-type="DIAMOND MINES">
+                        <button class="w-full bg-yellow-500 text-gray-900 font-bold py-3 rounded-lg btn" data-type="DIAMOND MINES">
                             구매하기
                         </button>
                     </div>
@@ -533,8 +540,6 @@
             </div>
         </main>
 
-        <!-- Removed: withdrawalRequest-page -->
-
         <!-- Customer Service Page -->
         <main id="customerService-page" class="container mx-auto p-4 md:p-8 py-16 hidden-page">
             <h1 class="text-3xl md:text-5xl font-bold text-center text-yellow-400 mb-8">고객 센터</h1>
@@ -578,6 +583,42 @@
                 </div>
             </div>
         </main>
+
+        <!-- Board Page -->
+        <main id="board-page" class="container mx-auto p-4 md:p-8 py-16 hidden-page">
+            <h1 class="text-3xl md:text-5xl font-bold text-center text-yellow-400 mb-8">자유 게시판 (거래)</h1>
+            <div class="max-w-6xl mx-auto">
+                <div class="flex justify-between items-center mb-6 border-b border-gray-700 pb-4">
+                    <div id="board-tabs" class="flex space-x-4">
+                        <button class="px-4 py-2 rounded-lg font-bold board-tab bg-blue-600 text-white" data-category="판매">판매 게시판</button>
+                        <button class="px-4 py-2 rounded-lg font-bold board-tab bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="구매">구매 게시판</button>
+                    </div>
+                    <button id="show-new-post-modal" class="bg-yellow-500 text-gray-900 font-bold py-2 px-6 rounded-lg btn">글쓰기</button>
+                </div>
+
+                <!-- Board List -->
+                <div class="card p-4 rounded-xl">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left admin-table">
+                            <thead>
+                                <tr class="text-gray-400 uppercase text-sm">
+                                    <th class="font-normal w-1/12 hidden sm:table-cell">번호</th>
+                                    <th class="font-normal w-6/12">제목</th>
+                                    <th class="font-normal w-2/12">작성자</th>
+                                    <th class="font-normal w-3/12">작성일</th>
+                                    <th class="font-normal w-1/12">관리</th>
+                                </tr>
+                            </thead>
+                            <tbody id="board-list-body">
+                                <!-- Posts will be rendered here -->
+                                <tr><td colspan="5" class="text-center text-gray-500">게시물이 없습니다.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <!-- End Board Page -->
 
 
         <!-- Admin Page -->
@@ -838,9 +879,37 @@
         </div>
     </div>
 
+    <!-- New Post Modal -->
+    <div id="new-post-modal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-2xl font-bold text-yellow-400">새 게시물 작성</h3>
+                <button id="close-post-modal" class="text-gray-400 hover:text-gray-200 text-2xl font-bold">&times;</button>
+            </div>
+            <form id="new-post-form" class="space-y-4">
+                 <div>
+                    <label for="post-category" class="block text-gray-400 mb-1">카테고리</label>
+                    <select id="post-category" class="form-input" required>
+                        <option value="판매">판매</option>
+                        <option value="구매">구매</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="post-title" class="block text-gray-400 mb-1">제목</label>
+                    <input type="text" id="post-title" class="form-input" required>
+                </div>
+                <div>
+                    <label for="post-content" class="block text-gray-400 mb-1">내용</label>
+                    <textarea id="post-content" rows="6" class="form-input" placeholder="거래할 내용 또는 연락처를 남겨주세요." required></textarea>
+                </div>
+                <button type="submit" class="w-full bg-blue-600 text-white font-bold py-3 rounded-lg btn">게시물 등록</button>
+            </form>
+        </div>
+    </div>
+
     <script>
         // JS 상에서 'withdrawalRequest' 페이지를 제거합니다.
-        const pages = ['home', 'howToMine', 'openMiningFarm', 'myMiningFarm', 'coinWallet', 'admin', 'customerService'];
+        const pages = ['home', 'howToMine', 'openMiningFarm', 'myMiningFarm', 'coinWallet', 'admin', 'customerService', 'board'];
         const pageElements = pages.reduce((acc, page) => {
             acc[page] = document.getElementById(`${page}-page`);
             return acc;
@@ -868,11 +937,13 @@
         const mobileMenuButton = document.getElementById('mobile-menu-button');
         const mobileMenu = document.getElementById('mobile-menu');
         const closeMobileMenu = document.getElementById('close-mobile-menu');
+        const newPostModal = document.getElementById('new-post-modal'); // New Post Modal Element
 
         let isLoggedIn = false;
         let currentUser = null;
         let globalMiningInterval = null; // Variable to hold the global mining interval
         let activePage = 'home'; // Variable to track the currently active page
+        let currentBoardCategory = '판매'; // Track active board category
         let miningRates = {
             'SILVER MINES': 0,
             'GOLD MINES': 0,
@@ -911,6 +982,8 @@
         const saveMiningRates = (rates) => localStorage.setItem('miningRates', JSON.stringify(rates));
         const getInquiries = () => JSON.parse(localStorage.getItem('inquiries')) || [];
         const saveInquiries = (inquiries) => localStorage.setItem('inquiries', JSON.stringify(inquiries));
+        const getPosts = () => JSON.parse(localStorage.getItem('posts')) || [];
+        const savePosts = (posts) => localStorage.setItem('posts', JSON.stringify(posts));
         
         // Helper to format currency
         const formatCurrency = (amount) => {
@@ -919,9 +992,15 @@
 
         // Helper to format date
         const formatDateTime = (date) => {
+            // 날짜 및 시간(년, 월, 일, 시간, 분) 상세 포맷
             if (!date) return '미기록';
             const d = new Date(date);
-            return `${d.toLocaleDateString()} ${d.toLocaleTimeString()}`;
+            const year = d.getFullYear();
+            const month = (d.getMonth() + 1).toString().padStart(2, '0');
+            const day = d.getDate().toString().padStart(2, '0');
+            const hours = d.getHours().toString().padStart(2, '0');
+            const minutes = d.getMinutes().toString().padStart(2, '0');
+            return `${year}.${month}.${day} ${hours}:${minutes}`;
         };
         
         // Helper to format duration
@@ -971,6 +1050,12 @@
                 adminLoginModal.style.display = 'flex';
                 return;
             }
+            // 로그인 필요 페이지 체크
+            if (!isLoggedIn && ['myMiningFarm', 'coinWallet', 'customerService', 'openMiningFarm', 'board'].includes(pageId)) {
+                showMessageModal('알림', '로그인 후 이용 가능합니다.');
+                return;
+            }
+
             activePage = pageId; // Update the active page tracker
             pages.forEach(page => {
                 if (pageElements[page]) {
@@ -995,6 +1080,8 @@
                 renderCoinWallet(); // 통합된 페이지 렌더링
             } else if (pageId === 'customerService') {
                 renderCustomerServicePage();
+            } else if (pageId === 'board') {
+                renderBoardPage(currentBoardCategory); // 게시판 페이지 렌더링
             }
         };
         
@@ -1062,9 +1149,10 @@
             const messageTitle = document.getElementById('message-modal-title');
             const messageContent = document.getElementById('message-modal-content');
 
-            messageTitle.textContent = title;
-            messageContent.textContent = message;
-            messageModal.style.display = 'flex';
+            // Null 체크를 통해 오류를 방지합니다.
+            if (messageTitle) messageTitle.textContent = title;
+            if (messageContent) messageContent.textContent = message;
+            if (messageModal) messageModal.style.display = 'flex';
         };
 
         const handleUserSearch = () => {
@@ -1172,7 +1260,7 @@
             button.addEventListener('click', () => {
                 const pageId = button.dataset.page;
                 // 'withdrawalRequest'를 제거하고 'coinWallet'만 남깁니다.
-                if (!isLoggedIn && ['myMiningFarm', 'coinWallet', 'customerService', 'openMiningFarm'].includes(pageId)) {
+                if (!isLoggedIn && ['myMiningFarm', 'coinWallet', 'customerService', 'openMiningFarm', 'board'].includes(pageId)) {
                     showMessageModal('알림', '로그인 후 이용 가능합니다.');
                     return;
                 }
@@ -1369,15 +1457,20 @@
              // Clear previous buttons
              mobileAuthContainer.innerHTML = '';
              
-             // Clone desktop buttons to mobile menu
+             // desktopAuthContainer의 자식 요소만 복제 대상으로 필터링합니다.
              Array.from(desktopAuthContainer.children).forEach(node => {
-                const clone = node.cloneNode(true);
-                clone.id = `mobile-${node.id}`; // Ensure unique IDs
-                clone.classList.remove('hidden', 'md:flex');
-                clone.classList.add('w-full', 'block');
-                mobileAuthContainer.appendChild(clone);
+                // DOM 요소만 복제하고, 텍스트 노드 등은 무시합니다.
+                if (node.nodeType === 1) { 
+                    const clone = node.cloneNode(true);
+                    // 복제된 요소에만 'mobile-' 접두사를 붙여 ID 충돌을 방지합니다.
+                    if(clone.id) clone.id = `mobile-${node.id}`; 
+                    clone.classList.remove('hidden', 'md:flex');
+                    clone.classList.add('w-full', 'block');
+                    mobileAuthContainer.appendChild(clone);
+                }
              });
              
+             // Mobile clone된 요소들을 다시 가져옵니다.
              const mobileLoginBtn = document.getElementById('mobile-login-btn');
              const mobileSignupBtn = document.getElementById('mobile-signup-btn');
              const mobileMemberInfoBtn = document.getElementById('mobile-member-info-btn');
@@ -1649,7 +1742,7 @@
                     <td>${req.amount.toFixed(6)} USDT</td>
                     <td>${req.walletAddress}</td>
                     <td>${req.status}</td>
-                    <td>${req.requestDate}</td>
+                    <td>${formatDateTime(req.requestDate)}</td>
                     <td>${buttonHtml}</td>
                 `;
                 tableBody.appendChild(row);
@@ -1777,10 +1870,10 @@
             const historyTableBody = document.getElementById('withdrawal-history-table-body');
 
             if (!isLoggedIn) {
-                totalMinedElement.textContent = '로그인 후 확인 가능';
-                availableUsdtElement.textContent = '로그인 후 확인 가능';
-                currentBalanceElement.textContent = '로그인 후 확인 가능'; // 업데이트
-                historyTableBody.innerHTML = `<tr><td colspan="3" class="text-center text-gray-500">로그인 후 확인 가능</td></tr>`;
+                if(totalMinedElement) totalMinedElement.textContent = '로그인 후 확인 가능';
+                if(availableUsdtElement) availableUsdtElement.textContent = '로그인 후 확인 가능';
+                if(currentBalanceElement) currentBalanceElement.textContent = '로그인 후 확인 가능'; // 업데이트
+                if(historyTableBody) historyTableBody.innerHTML = `<tr><td colspan="3" class="text-center text-gray-500">로그인 후 확인 가능</td></tr>`;
                 return;
             }
 
@@ -1789,7 +1882,7 @@
             const userFarms = allFarms.filter(farm => farm.userId === currentUser.id);
             const totalMined = userFarms.reduce((sum, farm) => sum + farm.minedAmount, 0);
             
-            totalMinedElement.textContent = `${totalMined.toFixed(6)} USDT`;
+            if(totalMinedElement) totalMinedElement.textContent = `${totalMined.toFixed(6)} USDT`;
 
             // Calculate available USDT for withdrawal
             const allRequests = getWithdrawalRequests();
@@ -1800,24 +1893,24 @@
             
             const availableBalance = totalMined - totalRequestedOrWithdrawn;
             
-            availableUsdtElement.textContent = `${availableBalance.toFixed(6)} USDT`;
-            currentBalanceElement.textContent = `${availableBalance.toFixed(6)} USDT`; // 잔액 항목 업데이트
+            if(availableUsdtElement) availableUsdtElement.textContent = `${availableBalance.toFixed(6)} USDT`;
+            if(currentBalanceElement) currentBalanceElement.textContent = `${availableBalance.toFixed(6)} USDT`; // 잔액 항목 업데이트
 
             // Update withdrawal history
             userRequests.reverse(); // Show recent first
-            historyTableBody.innerHTML = '';
+            if(historyTableBody) historyTableBody.innerHTML = '';
             if (userRequests.length === 0) {
-                historyTableBody.innerHTML = `<tr><td colspan="3" class="text-center text-gray-500">출금 요청 내역이 없습니다.</td></tr>`;
+                if(historyTableBody) historyTableBody.innerHTML = `<tr><td colspan="3" class="text-center text-gray-500">출금 요청 내역이 없습니다.</td></tr>`;
             } else {
                 userRequests.forEach(req => {
                     const statusClass = req.status === '승인 완료' ? 'text-green-400' : 'text-yellow-400';
                     const row = document.createElement('tr');
                     row.innerHTML = `
-                        <td>${req.requestDate}</td>
+                        <td>${formatDateTime(req.requestDate)}</td>
                         <td>${req.amount.toFixed(6)}</td>
                         <td><span class="${statusClass}">${req.status}</span></td>
                     `;
-                    historyTableBody.appendChild(row);
+                    if(historyTableBody) historyTableBody.appendChild(row);
                 });
             }
         };
@@ -1825,8 +1918,16 @@
         // Handle withdrawal request form submission
         document.getElementById('withdrawal-form').addEventListener('submit', (e) => {
             e.preventDefault();
-            const amount = parseFloat(document.getElementById('withdrawal-amount').value);
-            const walletAddress = document.getElementById('wallet-address').value;
+            const withdrawalAmountInput = document.getElementById('withdrawal-amount');
+            const walletAddressInput = document.getElementById('wallet-address');
+
+            if (!withdrawalAmountInput || !walletAddressInput) {
+                showMessageModal('오류', '출금 양식 요소를 찾을 수 없습니다.');
+                return;
+            }
+
+            const amount = parseFloat(withdrawalAmountInput.value);
+            const walletAddress = walletAddressInput.value;
             
             // Recalculate available balance for validation
             const allFarms = getMyMiningFarms();
@@ -1855,7 +1956,7 @@
                 amount,
                 walletAddress,
                 status: '대기 중',
-                requestDate: new Date().toLocaleDateString('ko-KR')
+                requestDate: new Date().toISOString() // ISOString으로 저장하여 정확한 시간 정보를 포함
             };
 
             const requests = getWithdrawalRequests();
@@ -1891,17 +1992,23 @@
         });
 
         document.getElementById('update-mining-rate-btn').addEventListener('click', () => {
+            const silverRateInput = document.getElementById('silver-rate');
+            const goldRateInput = document.getElementById('gold-rate');
+            const diamondRateInput = document.getElementById('diamond-rate');
+
             const rates = {
-                'SILVER MINES': parseFloat(document.getElementById('silver-rate').value) || 0,
-                'GOLD MINES': parseFloat(document.getElementById('gold-rate').value) || 0,
-                'DIAMOND MINES': parseFloat(document.getElementById('diamond-rate').value) || 0
+                'SILVER MINES': parseFloat(silverRateInput.value) || 0,
+                'GOLD MINES': parseFloat(goldRateInput.value) || 0,
+                'DIAMOND MINES': parseFloat(diamondRateInput.value) || 0
             };
             saveMiningRates(rates);
 
             const message = document.getElementById('mining-rate-message');
-            message.textContent = '채굴량이 성공적으로 업데이트되었습니다.';
-            message.classList.remove('hidden');
-            setTimeout(() => message.classList.add('hidden'), 3000);
+            if(message) {
+                 message.textContent = '채굴량이 성공적으로 업데이트되었습니다.';
+                 message.classList.remove('hidden');
+                 setTimeout(() => message.classList.add('hidden'), 3000);
+            }
         });
 
         document.getElementById('analyze-market-btn').addEventListener('click', () => {
@@ -1909,13 +2016,13 @@
             const analysisText = document.getElementById('analysis-text');
             const loader = document.getElementById('analysis-loader');
 
-            analysisResultDiv.classList.remove('hidden');
-            analysisText.textContent = '';
-            loader.classList.remove('hidden');
+            if(analysisResultDiv) analysisResultDiv.classList.remove('hidden');
+            if(analysisText) analysisText.textContent = '';
+            if(loader) loader.classList.remove('hidden');
 
             setTimeout(() => {
-                loader.classList.add('hidden');
-                analysisText.textContent = "현재 코인 시장은 상승 추세를 보이고 있으며, 주요 코인들이 안정적인 상승세를 유지하고 있습니다. 단기적으로는 가격 변동성이 있을 수 있으나, 장기적인 전망은 긍정적입니다.";
+                if(loader) loader.classList.add('hidden');
+                if(analysisText) analysisText.textContent = "현재 코인 시장은 상승 추세를 보이고 있으며, 주요 코인들이 안정적인 상승세를 유지하고 있습니다. 단기적으로는 가격 변동성이 있을 수 있으나, 장기적인 전망은 긍정적입니다.";
             }, 2000);
         });
 
@@ -1925,7 +2032,7 @@
 
         window.addEventListener('keydown', (e) => {
             const messageModal = document.getElementById('message-modal');
-            if (messageModal.style.display === 'flex' && e.code === 'Space') {
+            if (messageModal && messageModal.style.display === 'flex' && e.code === 'Space') {
                 e.preventDefault();
                 closeMessageModal();
             }
@@ -1935,21 +2042,23 @@
         const renderCustomerServicePage = () => {
             const inquiriesList = document.getElementById('inquiries-list');
             const formContainer = document.getElementById('inquiry-form-container');
-            formContainer.classList.add('hidden');
-            inquiriesList.innerHTML = '';
+            const showInquiryBtn = document.getElementById('show-inquiry-form-btn');
+            
+            if(formContainer) formContainer.classList.add('hidden');
+            if(inquiriesList) inquiriesList.innerHTML = '';
             
             if (!isLoggedIn) {
-                inquiriesList.innerHTML = `<p class="text-center text-gray-500">로그인 후 문의 내역을 확인하거나 새 문의를 작성할 수 있습니다.</p>`;
-                document.getElementById('show-inquiry-form-btn').classList.add('hidden');
+                if(inquiriesList) inquiriesList.innerHTML = `<p class="text-center text-gray-500">로그인 후 문의 내역을 확인하거나 새 문의를 작성할 수 있습니다.</p>`;
+                if(showInquiryBtn) showInquiryBtn.classList.add('hidden');
                 return;
             }
-            document.getElementById('show-inquiry-form-btn').classList.remove('hidden');
+            if(showInquiryBtn) showInquiryBtn.classList.remove('hidden');
 
             const allInquiries = getInquiries();
             const userInquiries = currentUser.isAdmin ? allInquiries : allInquiries.filter(inq => inq.userId === currentUser.id);
 
             if (userInquiries.length === 0) {
-                 inquiriesList.innerHTML = `<p class="text-center text-gray-500">작성한 문의 내역이 없습니다.</p>`;
+                 if(inquiriesList) inquiriesList.innerHTML = `<p class="text-center text-gray-500">작성한 문의 내역이 없습니다.</p>`;
             }
             
             userInquiries.reverse().forEach(inquiry => { // Show recent first
@@ -1978,7 +2087,7 @@
                                 </div>
                             `).join('')}
                         </div>
-                        ${currentUser.isAdmin && inquiry.status === 'open' ? `
+                        ${currentUser && currentUser.isAdmin && inquiry.status === 'open' ? `
                             <form class="admin-reply-form mt-4 space-y-2" data-inquiry-id="${inquiry.id}">
                                 <textarea class="form-input" rows="3" placeholder="답변을 입력하세요..." required></textarea>
                                 <div class="flex justify-end space-x-2">
@@ -1989,12 +2098,13 @@
                         ` : ''}
                     </div>
                 `;
-                inquiriesList.appendChild(inquiryCard);
+                if(inquiriesList) inquiriesList.appendChild(inquiryCard);
             });
         };
 
         const renderAdminInquiries = (filterCategory = '전체') => {
             const container = document.getElementById('admin-inquiries-list');
+            if(!container) return; // Null 체크 추가
             container.innerHTML = '';
             
             const allInquiries = getInquiries();
@@ -2074,7 +2184,7 @@
             if(header) {
                 const inquiryId = header.dataset.inquiryId;
                 const content = document.querySelector(`#customerService-page .inquiry-content[data-inquiry-id="${inquiryId}"]`);
-                content.classList.toggle('hidden');
+                if(content) content.classList.toggle('hidden');
             }
         });
         
@@ -2129,16 +2239,20 @@
             const messageEl = document.getElementById('password-change-message');
 
             if (!newPassword || !confirmPassword) {
-                messageEl.textContent = '새 비밀번호를 입력해주세요.';
-                messageEl.className = 'text-center text-sm mt-2 text-red-400';
-                messageEl.classList.remove('hidden');
+                if(messageEl) {
+                    messageEl.textContent = '새 비밀번호를 입력해주세요.';
+                    messageEl.className = 'text-center text-sm mt-2 text-red-400';
+                    messageEl.classList.remove('hidden');
+                }
                 return;
             }
 
             if (newPassword !== confirmPassword) {
-                messageEl.textContent = '비밀번호가 일치하지 않습니다.';
-                messageEl.className = 'text-center text-sm mt-2 text-red-400';
-                messageEl.classList.remove('hidden');
+                if(messageEl) {
+                    messageEl.textContent = '비밀번호가 일치하지 않습니다.';
+                    messageEl.className = 'text-center text-sm mt-2 text-red-400';
+                    messageEl.classList.remove('hidden');
+                }
                 return;
             }
 
@@ -2150,12 +2264,15 @@
                 saveUsers(users);
 
                 // Update the password displayed in the modal
-                document.getElementById('detail-password').textContent = newPassword;
+                const detailPasswordEl = document.getElementById('detail-password');
+                if(detailPasswordEl) detailPasswordEl.textContent = newPassword;
 
                 // Show success message
-                messageEl.textContent = '비밀번호가 성공적으로 변경되었습니다.';
-                messageEl.className = 'text-center text-sm mt-2 text-green-400';
-                messageEl.classList.remove('hidden');
+                if(messageEl) {
+                    messageEl.textContent = '비밀번호가 성공적으로 변경되었습니다.';
+                    messageEl.className = 'text-center text-sm mt-2 text-green-400';
+                    messageEl.classList.remove('hidden');
+                }
 
                 // Clear input fields
                 document.getElementById('new-password').value = '';
@@ -2163,13 +2280,15 @@
 
                 // Hide message after a few seconds
                 setTimeout(() => {
-                    messageEl.classList.add('hidden');
+                    if(messageEl) messageEl.classList.add('hidden');
                 }, 3000);
 
             } else {
-                messageEl.textContent = '사용자를 찾을 수 없습니다.';
-                messageEl.className = 'text-center text-sm mt-2 text-red-400';
-                messageEl.classList.remove('hidden');
+                if(messageEl) {
+                    messageEl.textContent = '사용자를 찾을 수 없습니다.';
+                    messageEl.className = 'text-center text-sm mt-2 text-red-400';
+                    messageEl.classList.remove('hidden');
+                }
             }
         });
 
@@ -2177,7 +2296,10 @@
             if (e.target.classList.contains('admin-reply-form')) {
                 e.preventDefault();
                 const inquiryId = e.target.dataset.inquiryId;
-                const replyText = e.target.querySelector('textarea').value;
+                const replyTextarea = e.target.querySelector('textarea');
+                if(!replyTextarea) return;
+
+                const replyText = replyTextarea.value;
                 let inquiries = getInquiries();
                 const inquiryIndex = inquiries.findIndex(i => i.id === inquiryId);
 
@@ -2198,10 +2320,12 @@
 
         // Show/hide new inquiry form
         document.getElementById('show-inquiry-form-btn').addEventListener('click', () => {
-            document.getElementById('inquiry-form-container').classList.remove('hidden');
+            const formContainer = document.getElementById('inquiry-form-container');
+            if(formContainer) formContainer.classList.remove('hidden');
         });
         document.getElementById('cancel-inquiry-btn').addEventListener('click', () => {
-             document.getElementById('inquiry-form-container').classList.add('hidden');
+             const formContainer = document.getElementById('inquiry-form-container');
+             if(formContainer) formContainer.classList.add('hidden');
         });
         
         // Handle new inquiry submission
@@ -2229,8 +2353,151 @@
 
             showMessageModal('문의 접수', '새로운 문의가 성공적으로 접수되었습니다.');
             document.getElementById('inquiry-form').reset();
-            document.getElementById('inquiry-form-container').classList.add('hidden');
+            const formContainer = document.getElementById('inquiry-form-container');
+            if(formContainer) formContainer.classList.add('hidden');
             renderCustomerServicePage();
+        });
+
+
+        // --- Board Logic ---
+        
+        const renderBoardPage = (category) => {
+            const boardListBody = document.getElementById('board-list-body');
+            const boardTabs = document.querySelectorAll('.board-tab');
+            const allPosts = getPosts();
+            
+            currentBoardCategory = category;
+
+            // 탭 상태 업데이트
+            boardTabs.forEach(tab => {
+                if (tab.dataset.category === category) {
+                    tab.classList.remove('bg-gray-700', 'text-gray-300', 'hover:bg-gray-600');
+                    tab.classList.add('bg-blue-600', 'text-white');
+                } else {
+                    tab.classList.remove('bg-blue-600', 'text-white');
+                    tab.classList.add('bg-gray-700', 'text-gray-300', 'hover:bg-gray-600');
+                }
+            });
+
+            // 게시물 필터링 및 렌더링
+            const filteredPosts = allPosts.filter(post => post.category === category).reverse();
+            
+            if (!boardListBody) return;
+
+            boardListBody.innerHTML = '';
+
+            if (filteredPosts.length === 0) {
+                boardListBody.innerHTML = `<tr><td colspan="5" class="text-center text-gray-500 py-4">해당 카테고리에 게시물이 없습니다.</td></tr>`;
+                return;
+            }
+
+            filteredPosts.forEach((post, index) => {
+                const row = document.createElement('tr');
+                row.classList.add('board-post', 'hover:bg-gray-800/50', 'cursor-pointer');
+                row.dataset.postId = post.id; // 클릭 이벤트 처리를 위해 ID 저장
+
+                const deleteButton = (currentUser && currentUser.id === post.userId) ? 
+                    `<button class="delete-post-btn text-red-500 hover:text-red-400 text-sm" data-post-id="${post.id}">[삭제]</button>` : '';
+
+                row.innerHTML = `
+                    <td class="hidden sm:table-cell">${filteredPosts.length - index}</td>
+                    <td>
+                        <span class="font-bold">${post.title}</span>
+                        <div class="text-xs text-gray-500 mt-1 sm:hidden">작성자: ${post.username} | ${formatDateTime(post.createdAt)}</div>
+                    </td>
+                    <td>${post.username}</td>
+                    <td>${formatDateTime(post.createdAt)}</td>
+                    <td>${deleteButton}</td>
+                `;
+                boardListBody.appendChild(row);
+            });
+        };
+
+        // 게시판 탭 클릭 이벤트
+        document.getElementById('board-page').addEventListener('click', (e) => {
+            if (e.target.classList.contains('board-tab')) {
+                renderBoardPage(e.target.dataset.category);
+            } else if (e.target.id === 'show-new-post-modal') {
+                if (!isLoggedIn) {
+                    showMessageModal('알림', '로그인 후 글쓰기가 가능합니다.');
+                    return;
+                }
+                newPostModal.style.display = 'flex';
+                document.getElementById('new-post-form').reset();
+            } else if (e.target.classList.contains('delete-post-btn')) {
+                e.stopPropagation(); // 행 클릭 이벤트 방지
+                const postId = e.target.dataset.postId;
+                showMessageModal('삭제 확인', '정말로 이 게시물을 삭제하시겠습니까?');
+                
+                // 임시로 메시지 모달의 확인 버튼에 삭제 로직을 연결합니다.
+                const confirmBtn = document.getElementById('message-modal-confirm-btn');
+                const originalHandler = confirmBtn.onclick; // 기존 핸들러 저장
+                
+                confirmBtn.textContent = '삭제';
+                confirmBtn.onclick = () => {
+                    closeMessageModal();
+                    let posts = getPosts();
+                    const updatedPosts = posts.filter(p => p.id !== postId);
+                    savePosts(updatedPosts);
+                    renderBoardPage(currentBoardCategory);
+                    showMessageModal('삭제 완료', '게시물이 삭제되었습니다.');
+                    
+                    // 원래 핸들러로 복원 및 텍스트 복원
+                    confirmBtn.textContent = '확인';
+                    confirmBtn.onclick = originalHandler;
+                };
+
+            } else if (e.target.closest('.board-post')) {
+                // 게시물 상세 보기 로직 (간단히 Alert으로 내용 표시)
+                const postRow = e.target.closest('.board-post');
+                const postId = postRow.dataset.postId;
+                const post = getPosts().find(p => p.id === postId);
+                if (post) {
+                    showMessageModal(
+                        `[${post.category}] ${post.title}`,
+                        `작성자: ${post.username}\n날짜: ${formatDateTime(post.createdAt)}\n\n내용:\n${post.content}`
+                    );
+                }
+            }
+        });
+
+        // 새 게시물 작성 모달 닫기
+        document.getElementById('close-post-modal').addEventListener('click', () => {
+            newPostModal.style.display = 'none';
+        });
+
+        // 새 게시물 작성 폼 제출
+        document.getElementById('new-post-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // 로그인 상태 재확인 (혹시 모를 우회 방지)
+            if (!isLoggedIn || !currentUser) {
+                newPostModal.style.display = 'none';
+                showMessageModal('오류', '로그인이 필요합니다.');
+                return;
+            }
+
+            const category = document.getElementById('post-category').value;
+            const title = document.getElementById('post-title').value;
+            const content = document.getElementById('post-content').value;
+            
+            const newPost = {
+                id: 'P' + Date.now().toString(),
+                userId: currentUser.id,
+                username: currentUser.username,
+                category,
+                title,
+                content,
+                createdAt: new Date().toISOString(),
+            };
+
+            const posts = getPosts();
+            posts.push(newPost);
+            savePosts(posts);
+
+            newPostModal.style.display = 'none';
+            showMessageModal('등록 완료', '새 게시물이 성공적으로 등록되었습니다.');
+            renderBoardPage(category); // 새로 등록된 카테고리로 업데이트
         });
 
 
